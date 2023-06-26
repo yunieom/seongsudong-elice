@@ -94,6 +94,34 @@ export const loginUser = async (
 };
 
 //회원가입
+// export const createUser = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   const email = req.body.email;
+//   const name = req.body.name;
+//   const generation = req.body.generation;
+
+//   try {
+//     const createUserQuery =
+//       'INSERT INTO members (email, name, generation) VALUES (?,?,?)';
+
+//     const result = await con
+//       .promise()
+//       .query(createUserQuery, [email, name, generation]);
+
+//     // 나중에 동명이인 처리 필요
+
+//     return res.status(201).json({
+//       message: '회원가입이 성공했습니다.',
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: '회원가입이 실패했습니다.' });
+
+//     next(err);
+//   }
+// };
 export const createUser = async (
   req: Request,
   res: Response,
@@ -104,21 +132,41 @@ export const createUser = async (
   const generation = req.body.generation;
 
   try {
-    const createUserQuery =
-      'INSERT INTO members (email, name, generation) VALUES (?,?,?)';
+    interface DuplicateItem {
+      count: number;
+      name: string;
+    }
+    // 이름 중복 체크
+    const checkDuplicateQuery = 'SELECT COUNT(*) as count FROM members WHERE name = ?';
+    const duplicateResult = await con.promise().query(checkDuplicateQuery, [name]);
+    const duplicateCount: number = Number(duplicateResult[0]);
+    //duplicateResult[0][0].count로 해야되는데 타입에러로 가져오질 못함
+    console.log('이름 듑 확인:', duplicateResult[0])
 
-    const result = await con
-      .promise()
-      .query(createUserQuery, [email, name, generation]);
+    if (duplicateCount > 0) {
+      // 동일한 이름을 가진 멤버가 이미 존재하는 경우
+      // 새로운 이름 생성 로직을 추가하여 처리
+      const newName = `${name} ${String.fromCharCode(65 + duplicateCount)}`; // 'A', 'B', 'C' ...
 
-    // 나중에 동명이인 처리 필요
+      // 회원 추가 쿼리 실행
+      const createUserQuery = 'INSERT INTO members (email, name, generation) VALUES (?,?,?)';
+      const result = await con.promise().query(createUserQuery, [email, newName, generation]);
 
-    return res.status(201).json({
-      message: '회원가입이 성공했습니다.',
-    });
+      return res.status(201).json({
+        message: '회원가입이 성공했습니다.',
+      });
+    } else {
+      // 동일한 이름을 가진 멤버가 없는 경우
+      // 회원 추가 쿼리 실행
+      const createUserQuery = 'INSERT INTO members (email, name, generation) VALUES (?,?,?)';
+      const result = await con.promise().query(createUserQuery, [email, name, generation]);
+
+      return res.status(201).json({
+        message: '회원가입이 성공했습니다.',
+      });
+    }
   } catch (err) {
     res.status(500).json({ message: '회원가입이 실패했습니다.' });
-
     next(err);
   }
 };

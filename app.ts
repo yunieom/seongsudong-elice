@@ -38,6 +38,7 @@ app.use(
       'https://www.firefighter.today',
       'http://www.firefighter.today',
       'http://localhost:3000',
+      'http://localhost:8000',
       process.env.CALLBACK_URL || '',
     ],
     credentials: true,
@@ -118,19 +119,19 @@ io.on('connect', socket => {
 
   /* 채팅방 생성하기 */
   socket.on(
-    'createChatRoom', 
+    'createChatRoom',
     async (member_email: string) => {
       try {
         const newRoomId = await createChatRoom(member_email);
         const roomId = newRoomId;
-  
+
         socket.join(roomId);
         console.log(`Entered in ${roomId}!`);
       } catch (error) {
         console.error('채팅방 생성 중 에러 발생', error);
-        socket.emit('createChatRoomError', '채팅방 생성 중 에러 발생');      
+        socket.emit('createChatRoomError', '채팅방 생성 중 에러 발생');
       }
-  })
+    })
 
   /* 메세지 받고 주기 */
   socket.on(
