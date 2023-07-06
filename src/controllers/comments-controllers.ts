@@ -198,10 +198,6 @@ export const deleteCommentAdmin = async (
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.user as any) {
-    return;
-  }
-
   const postId = req.params.postId;
   const commentId = req.params.commentId;
   const email = (req as ExtendedRequest).user.email;
