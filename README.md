@@ -1,7 +1,7 @@
 # **🚒 성수동 엘리스**
 <br><br>
 <p align="center">
-  <img src="/public/images/mainPage.png" width="1000" height="563">
+  <img src="https://github.com/yunieom/seongsudong-elice-BE/assets/67372083/ee7698a8-1373-485f-abfa-b48746c9d848" width="1000" height="563">
 </p>
 
 
@@ -17,7 +17,7 @@
 
 <br>
 
-[<img src="public/images/banner.png">](https://www.firefighter.today)
+[<img src="https://raw.githubusercontent.com/yunieom/seongsudong-elice-FE/dev/public/images/banner.png">](https://www.firefighter.today)
 #### 🔍 배너 클릭해서 사이트 구경하기!
 
 <br/><br/><br/>
