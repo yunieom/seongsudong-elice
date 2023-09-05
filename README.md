@@ -103,7 +103,7 @@
 
 ### 🎨  **협업 도구**
 #### 구경하고 싶다면 아이콘 클릭!!
-##### [<img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white">](https://www.figma.com/file/UsjJ6jb7183EYkwycY9BGW/%EC%84%B1%EC%88%98%EB%8F%99-%EC%97%98%EB%A6%AC%EC%8A%A4?type=design&node-id=11%3A1428&t=xfZgTkdHcgXADYNf-1) - 초반 기획시 빠른 레이아웃을 잡기 위해 사용
+##### [<img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white">](https://www.figma.com/file/UsjJ6jb7183EYkwycY9BGW/%EC%84%B1%EC%88%98%EB%8F%99-%EC%97%98%EB%A6%AC%EC%8A%A4?type=design&node-id=11%3A1428&t=xfZgTkdHcgXADYNf-1) - 초반 기획시 빠른 레이아웃을 잡기 위해 사용
 
 ##### <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"> - API 명세서, API DOCS등 활용  
 
@@ -117,12 +117,12 @@
 
 ### 🪄 **기술 명세서**
 
-<h align="center">[<img src="/public/images/functionSpecification.png">](https://rki0.notion.site/6e044ebd12d54f1c8ce2391085b46b8c)</h>
+<h align="center">[<img src="https://raw.githubusercontent.com/yunieom/seongsudong-elice-FE/dev/public/images/functionSpecification.png">](https://rki0.notion.site/6e044ebd12d54f1c8ce2391085b46b8c)</h>
 #### 기술명세서 자세히 보고 싶다면 사진 클릭 😀
 <br><br><br>
 
 ### 🧬 **ERD(Entity Relationship Diagram)**
-<h align="center"><img src="/public/images/ERD.png" width="1148" height="675"></h>
+<h align="center"><img src="https://raw.githubusercontent.com/yunieom/seongsudong-elice-FE/dev/public/images/ERD.png" width="1148" height="675"></h>
 <br><br>
 
 
