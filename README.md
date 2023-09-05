@@ -289,7 +289,7 @@ src
 
 ### 🔥시켜줘, 엘리스 명예소방관🔥
 
-<img src="/public/images/img%20copy.jpg" width="948" height="550" align="center">
+<img src="https://raw.githubusercontent.com/yunieom/seongsudong-elice-FE/dev/public/images/img%20copy.jpg" width="948" height="550" align="center">
 
 
 
