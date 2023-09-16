@@ -4,8 +4,9 @@ import con from '../../connection';
 import { v4 as uuidv4 } from 'uuid';
 import { sendEmail } from '../utils/send-email';
 import { ExtendedRequest } from '../types/checkAuth';
+import { Queue } from 'queue'; // 
 
-
+const reservationQueue = new Queue({ autostart: true, concurrency: 1 }); // 최대 1개의 예약을 동시에 처리
 
 // 예약 생성
 export const createReservation = async (
@@ -96,94 +97,39 @@ export const createReservation = async (
             '예약완료' //
         ];
 
-        await con.promise().query(createReservationQuery, createReservationParams);
+        // 예약을 큐에 추가
+        reservationQueue.push(async () => {
+            try {
+                await con.promise().query(createReservationQuery, createReservationParams);
 
-        // 예약 정보 조회
-        const getReservationQuery = `
-            SELECT *
-            FROM reservations
-            WHERE reservation_id = ?
-        `;
-        const [reservationRows] = await con.promise().query<RowDataPacket[]>(getReservationQuery, [reservation_id]);
-        const reservation: RowDataPacket | undefined = (reservationRows as RowDataPacket[])[0];
+                // 예약 정보 조회
+                const getReservationQuery = `
+                    SELECT *
+                    FROM reservations
+                    WHERE reservation_id = ?
+                `;
+                const [reservationRows] = await con.promise().query<RowDataPacket[]>(getReservationQuery, [reservation_id]);
+                const reservation: RowDataPacket | undefined = (reservationRows as RowDataPacket[])[0];
 
-        // 이메일 보내기
-        const emailText = `성수동 엘리스를 이용해 주셔서 감사합니다. \n \n${member_name}님의 엘리스랩 예약이 아래와 같이 완료되었습니다.\n예약 ID: ${reservation_id} \n예약일자: ${reservation_date} ${start_time}~${end_time} \n예약좌석: ${seat_type} ${seat_number}번 \n\n예약시간을 꼭 지켜주세요.`;
-        const emailSubject = '성수동 엘리스 예약이 완료되었습니다.';
-        const receiver = member_email;
-        sendEmail(receiver, emailSubject, emailText);
+                // 이메일 보내기
+                const emailText = `성수동 엘리스를 이용해 주셔서 감사합니다. \n \n${member_name}님의 엘리스랩 예약이 아래와 같이 완료되었습니다.\n예약 ID: ${reservation_id} \n예약일자: ${reservation_date} ${start_time}~${end_time} \n예약좌석: ${seat_type} ${seat_number}번 \n\n예약시간을 꼭 지켜주세요.`;
+                const emailSubject = '성수동 엘리스 예약이 완료되었습니다.';
+                const receiver = member_email;
+                sendEmail(receiver, emailSubject, emailText);
 
-        // 락 해제
-        await con.promise().query('UNLOCK TABLES');
+                // 락 해제
+                await con.promise().query('UNLOCK TABLES');
 
-        return res.status(201).json({ message: '예약이 완료되었습니다.', reservation });
+                return res.status(201).json({ message: '예약이 완료되었습니다.', reservation });
+            } catch (err) {
+                return Promise.reject(err);
+            }
+        });
     } catch (err) {
         return Promise.reject(err);
     }
 };
 
-// 좌석조회
-export const seatCheck = async (req: Request, res: Response): Promise<{ [seatNumber: string]: any } | Response> => {
-    try {
-        const { reservation_date } = req.query;
-
-        // 예약 조회
-        const getReservationsQuery = `
-            SELECT *
-            FROM reservations
-            WHERE reservation_date = ?
-        `;
-        const [reservationRows] = await con.promise().query<RowDataPacket[]>(getReservationsQuery, [
-            reservation_date,
-        ]);
-        const reservations: RowDataPacket[] = reservationRows;
-
-        // 모든 좌석 정보 조회
-        const getSeatsQuery = `
-            SELECT seat_number, seat_type
-            FROM seats
-        `;
-        const [seatRows] = await con.promise().query<RowDataPacket[]>(getSeatsQuery);
-        const seats: RowDataPacket[] = seatRows;
-
-
-        // 시간대별 예약 가능 여부 초기화
-        const seatAvailability: { [seatNumber: string]: any } = {};
-
-        // 시간대별로 예약 가능 여부와 좌석 번호를 저장하기 위해 좌석 정보를 초기화
-        seats.forEach((seat: RowDataPacket) => {
-            const seatNumber = seat.seat_number;
-            seatAvailability[seatNumber] = {
-                seat_type: seat.seat_type,
-                available10to14: true,
-                available14to18: true,
-                available18to22: true
-            };
-        });
-
-        // 예약된 좌석 확인
-        reservations.forEach((reservation: RowDataPacket) => {
-            const startTime = reservation.start_time;
-            const endTime = reservation.end_time;
-            const seatNumber = reservation.seat_number;
-
-            if (startTime <= '10:00' && endTime >= '14:00') {
-                seatAvailability[seatNumber].available10to14 = false;
-            }
-
-            if (startTime <= '14:00' && endTime >= '18:00') {
-                seatAvailability[seatNumber].available14to18 = false;
-            }
-
-            if (startTime <= '18:00' && endTime >= '22:00') {
-                seatAvailability[seatNumber].available18to22 = false;
-            }
-        });
-        return res.status(200).json(seatAvailability);
-    } catch (err) {
-        return Promise.reject(err);
-    }
-};
 
 // 예약 취소(일반사용자)
 export const cancelReservation = async (
