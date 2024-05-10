@@ -17,8 +17,8 @@
 
 <br>
 
-[<img src="https://raw.githubusercontent.com/yunieom/seongsudong-elice-FE/dev/public/images/banner.png">](https://www.firefighter.today)
-#### 🔍 배너 클릭해서 사이트 구경하기!
+<!-- [<img src="https://raw.githubusercontent.com/yunieom/seongsudong-elice-FE/dev/public/images/banner.png">](https://www.firefighter.today)
+#### 🔍 배너 클릭해서 사이트 구경하기! -->
 
 <br/><br/><br/>
 
